@@ -138,6 +138,42 @@ exact combinatorial labels
 
 Larger diffusion-NCO systems require substantially more training data, model capacity, search and compute.
 
+## GitHub Actions validation
+
+A GitHub-hosted Ubuntu 24.04 runner validated the repository on:
+
+```text
+Python   3.12.14
+PyTorch  2.13.0+cpu
+NumPy    2.5.2
+```
+
+The remote regression suite passed all **6/6 tests**, including Held-Karp versus brute-force exact enumeration, diffusion symmetry/zero-diagonal checks, a real PyTorch gradient path, actual denoiser training and reverse sampling, valid tour decoding, and 2-opt monotonicity.
+
+The CI smoke configuration used:
+
+```text
+nodes                  6
+training instances    16
+validation instances   6
+test instances         5
+diffusion steps        6
+training epochs        3
+reverse samples        1
+```
+
+Runner-observed result:
+
+```text
+best validation noise MSE = 0.420953
+
+method                         mean length   mean exact gap   max exact gap
+Diffusion heatmap + 2-opt         2.0697          0.000%          0.000%
+Nearest neighbor + 2-opt          2.0697          0.000%          0.000%
+```
+
+Both methods reached the Held-Karp optimum on this very small five-instance smoke fixture. This is an integration/correctness validation, not evidence that the diffusion method dominates the classical baseline. The larger local development fixture above remains the more discriminating comparison and shows the learned pipeline underperforming nearest-neighbor + 2-opt.
+
 ## Tests
 
 The regression suite checks:
